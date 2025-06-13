@@ -1,0 +1,120 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 19.5vw;
+  height: 100vh;
+  background: var(--color-darkBlue);
+  padding: 2.61vw 2vw;
+
+  & .sidebarHeader {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.55vw;
+    & .title {
+      font-size: 2.5vw;
+      color: var(--color-white);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-bold);
+    }
+
+    & .subTitle {
+      font-size: 1.05vw;
+      color: var(--color-white);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-regular);
+    }
+  }
+
+  & .sidebarNav {
+    display: flex;
+    flex-direction: column;
+    margin-top: 6.7vw;
+    & ul {
+      display: flex;
+      flex-direction: column;
+      list-style: none;
+      padding: 0;
+
+      & li {
+        & .sidebarLink {
+          display: flex;
+          align-items: center;
+          font-size: 1.459vw;
+          color: var(--color-white);
+          font-family: var(--font-Lato);
+          font-weight: var(--font-weight-regular);
+          padding: 1.305vw 1.045vw;
+          text-decoration: none;
+          gap: 0.525vw;
+          border-radius: 0.525vw;
+          transition: 0.3s ease-in-out;
+
+          &.active {
+            font-size: 1.05vw;
+            color: var(--color-darkBlue);
+            background: var(--color-lightBlue);
+          }
+
+          &:hover {
+            opacity: 0.65;
+          }
+
+          & span {
+            display: flex;
+          }
+
+          & .icon {
+            width: 1.3vw;
+            height: 1.3vw;
+          }
+
+          & .textLink {
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  .sidebar {
+    width: 374px;
+    height: 100vh;
+    padding: 50px 40px;
+
+    & .sidebarHeader {
+      padding: 0 10.5px;
+      & .title {
+        font-size: 48px;
+      }
+
+      & .subTitle {
+        font-size: 20px;
+      }
+    }
+
+    & .sidebarNav {
+      margin-top: 129px;
+      & ul {
+        & li {
+          & .sidebarLink {
+            font-size: 28px;
+            padding: 25px 20px;
+            gap: 10px;
+            border-radius: 10px;
+
+            &.active {
+              font-size: 20px;
+            }
+
+            & .icon {
+              width: 24px;
+              height: 24px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,11 @@ import { checkAuthState, clearUser } from './store/slices/authSlice';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
 import { PATHS, ROLES } from './constants';
+import Home from './components/DashBoardComponents/Home/Home';
+import Orders from './components/DashBoardComponents/Orders/Orders';
+import Clients from './components/DashBoardComponents/Clients/Clients';
+import Products from './components/DashBoardComponents/Products/Products';
+import Promocodes from './components/DashBoardComponents/Promocodes/Promocodes';
 
 // Ленивая загрузка компонентов
 const SignIn = lazy(() => import('./pages/SignIn/SignIn'));
@@ -89,8 +94,14 @@ export default function App() {
             <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.MODERATOR]}>
               <DashBoard handleLogout={handleLogout} />
             </ProtectedRoute>
-          }
-        />
+          }>
+          <Route index element={<Navigate to={`${PATHS.DASHBOARD}/home`} replace />} />
+          <Route path='home' element={<Home />} />
+          <Route path='orders' element={<Orders />} />
+          <Route path='products' element={<Products />} />
+          <Route path='promocodes' element={<Promocodes />} />
+          <Route path='clients' element={<Clients />} />
+        </Route>
         <Route
           path={PATHS.FORBIDDEN}
           element={

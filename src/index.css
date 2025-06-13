@@ -1,3 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+}
+
+:root {
+  --font-Lato: 'Lato';
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+
+  --font-lineh-small: 1em;
+  --color-white: white;
+  --color-backgroundDashboard: #e0e3e8;
+  --color-darkBlue: #232232;
+  --color-lightBlue: #b9e2fd;
+}
+
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #3b82f6;

@@ -1,0 +1,16 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: var(--color-backgroundDashboard);
+}
+
+.mainContentArea {
+  padding: 2.92vw 3.127vw;
+}
+
+@media (min-width: 1920px) {
+  .mainContentArea {
+    padding: 56px 60px;
+  }
+}
