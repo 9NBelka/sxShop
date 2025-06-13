@@ -36,6 +36,19 @@
       padding: 0;
 
       & li {
+        opacity: 0;
+        transform: translateX(-100%);
+        animation-duration: 0.5s;
+        animation-name: moveListInRight;
+        animation-fill-mode: forwards;
+        animation-timing-function: ease-out;
+
+        @for $i from 1 through 5 {
+          &:nth-child(#{$i}) {
+            animation-delay: #{0.2 * ($i - 1)}s; // 0.2s задержка между элементами
+          }
+        }
+
         & .sidebarLink {
           display: flex;
           align-items: center;
@@ -74,6 +87,17 @@
         }
       }
     }
+  }
+}
+
+@keyframes moveListInRight {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
