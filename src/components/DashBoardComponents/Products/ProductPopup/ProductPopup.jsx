@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closePopup, updateProduct, addProduct } from '../../../../store/slices/productsSlice';
 import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../../../../firebase';
 import styles from './ProductPopup.module.scss';
 import { BsPlusCircle, BsTrash, BsXLg } from 'react-icons/bs';
@@ -18,7 +18,7 @@ export default function ProductPopup() {
   const categoriesStatus = useSelector((state) => state.categories.status);
   const [formData, setFormData] = useState(
     editingProduct || {
-      id: doc(collection(db, 'products')).id,
+      id: '',
       name: '',
       description: '',
       createdAt: new Date().toISOString(),
@@ -30,7 +30,7 @@ export default function ProductPopup() {
     },
   );
   const [imageFiles, setImageFiles] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadedImagePreviews, setUploadedImagePreviews] = useState([]); // Only for new uploads
   const fileInputRef = useRef(null);
   const [showNewCategoryPopup, setShowNewCategoryPopup] = useState(false);
   const [newCategory, setNewCategory] = useState('');
@@ -39,16 +39,17 @@ export default function ProductPopup() {
     if (isPopupOpen && categoriesStatus === 'idle') {
       dispatch(fetchCategories());
     }
-    if (editingProduct && !formData.category && categories.length > 0) {
-      setFormData((prev) => ({ ...prev, category: editingProduct.category || '' }));
+    if (editingProduct) {
+      setFormData((prev) => ({ ...prev, ...editingProduct }));
+      // Do not set uploadedImagePreviews here; it should only hold new previews
     }
-  }, [dispatch, isPopupOpen, categoriesStatus, editingProduct, categories]);
+  }, [dispatch, isPopupOpen, categoriesStatus, editingProduct]);
 
   useEffect(() => {
     return () => {
-      uploadedImages.forEach((url) => URL.revokeObjectURL(url));
+      uploadedImagePreviews.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [uploadedImages]);
+  }, [uploadedImagePreviews]);
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -77,7 +78,10 @@ export default function ProductPopup() {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImageFiles((prev) => [...prev, ...files]);
-    setUploadedImages((prev) => [...prev, ...files.map((file) => URL.createObjectURL(file))]);
+    setUploadedImagePreviews((prev) => [
+      ...prev,
+      ...files.map((file) => URL.createObjectURL(file)),
+    ]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -105,6 +109,21 @@ export default function ProductPopup() {
     return '';
   };
 
+  const handleRemoveImage = async (index, isExisting) => {
+    if (isExisting && editingProduct) {
+      const imageUrl = formData.images[index];
+      const imageRef = ref(storage, imageUrl);
+      await deleteObject(imageRef).catch((error) => console.error('Error removing image:', error));
+      setFormData((prev) => ({
+        ...prev,
+        images: prev.images.filter((_, i) => i !== index),
+      }));
+    } else {
+      setImageFiles((prev) => prev.filter((_, i) => i !== index));
+      setUploadedImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationError = validateForm();
@@ -114,7 +133,7 @@ export default function ProductPopup() {
     }
 
     try {
-      let imageUrls = [...formData.images];
+      let imageUrls = [...formData.images]; // Start with existing images
       if (imageFiles.length > 0) {
         for (const file of imageFiles) {
           const storageRef = ref(storage, `products/images/${formData.id}/${file.name}`);
@@ -126,16 +145,13 @@ export default function ProductPopup() {
 
       const finalProductData = { ...formData, images: imageUrls };
       if (editingProduct) {
-        const productRef = doc(db, 'products', editingProduct.id);
-        await updateDoc(productRef, finalProductData);
-        dispatch(updateProduct(finalProductData));
+        await dispatch(updateProduct(finalProductData));
       } else {
-        const docRef = await addDoc(collection(db, 'products'), finalProductData);
-        dispatch(addProduct({ ...finalProductData, id: docRef.id }));
+        await dispatch(addProduct(finalProductData));
       }
       dispatch(closePopup());
       setImageFiles([]);
-      setUploadedImages([]);
+      setUploadedImagePreviews([]);
     } catch (error) {
       console.error('Ошибка сохранения:', error);
       alert(`Не удалось сохранить товар: ${error.message}`);
@@ -174,7 +190,7 @@ export default function ProductPopup() {
           <div
             className={clsx(
               styles.addImageBlocks,
-              formData.images.length + uploadedImages.length >= 2 && styles.scrollImages,
+              formData.images.length + uploadedImagePreviews.length >= 2 && styles.scrollImages,
             )}>
             {editingProduct &&
               formData.images.length > 0 &&
@@ -184,29 +200,35 @@ export default function ProductPopup() {
                     src={src}
                     alt={`Existing ${index}`}
                     className={clsx(
-                      formData.images.length + uploadedImages.length >= 1 && styles.opacityImage,
+                      formData.images.length + uploadedImagePreviews.length >= 1 &&
+                        styles.opacityImage,
                     )}
                   />
-                  <div className={styles.iconTrashBlock}>
+                  <div
+                    className={styles.iconTrashBlock}
+                    onClick={() => handleRemoveImage(index, true)}>
                     <BsTrash className={styles.addIcon} />
                   </div>
                 </div>
               ))}
-            {uploadedImages.map((src, index) => (
+            {uploadedImagePreviews.map((src, index) => (
               <div key={`uploaded-${index}`} className={styles.addImageBlock}>
                 <img
                   src={src}
                   alt={`Uploaded ${index}`}
                   className={clsx(
-                    formData.images.length + uploadedImages.length >= 1 && styles.opacityImage,
+                    formData.images.length + uploadedImagePreviews.length >= 1 &&
+                      styles.opacityImage,
                   )}
                 />
-                <div className={styles.iconTrashBlock}>
+                <div
+                  className={styles.iconTrashBlock}
+                  onClick={() => handleRemoveImage(index, false)}>
                   <BsTrash className={styles.addIcon} />
                 </div>
               </div>
             ))}
-            {formData.images.length + uploadedImages.length < 5 && (
+            {formData.images.length + uploadedImagePreviews.length < 5 && (
               <div className={styles.addImageBlock} onClick={handleImageBlockClick}>
                 <img src='/img/defaultImageForDashBoard.jpg' alt='defaultImageForDashBoard' />
                 <div className={styles.iconAndTextBlock}>
