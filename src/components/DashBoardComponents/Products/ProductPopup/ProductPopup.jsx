@@ -1,15 +1,16 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closePopup, updateProduct, addProduct } from '../../../../store/slices/productsSlice';
-import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../../../../firebase';
+import { storage } from '../../../../firebase';
 import styles from './ProductPopup.module.scss';
 import { BsPlusCircle, BsTrash, BsXLg } from 'react-icons/bs';
 import clsx from 'clsx';
 import { fetchCategories, addCategory } from '../../../../store/slices/categoriesSlice';
 import SelectCategory from './SelectCategory/SelectCategory';
 import SelectAvailable from './SelectAvailable/SelectAvailable';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProductPopup() {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ export default function ProductPopup() {
   const fileInputRef = useRef(null);
   const [showNewCategoryPopup, setShowNewCategoryPopup] = useState(false);
   const [newCategory, setNewCategory] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isPopupOpen && categoriesStatus === 'idle') {
@@ -91,10 +93,16 @@ export default function ProductPopup() {
 
   const handleAddNewCategory = async () => {
     if (newCategory.trim()) {
-      await dispatch(addCategory(newCategory.trim()));
-      setFormData((prev) => ({ ...prev, category: newCategory.trim() }));
-      setNewCategory('');
-      setShowNewCategoryPopup(false);
+      try {
+        await dispatch(addCategory(newCategory.trim())).unwrap();
+        setFormData((prev) => ({ ...prev, category: newCategory.trim() }));
+        setNewCategory('');
+        setShowNewCategoryPopup(false);
+        toast.success('Категория добавлена');
+      } catch (error) {
+        console.error('Ошибка добавления категории:', error);
+        toast.error('Не удалось добавить категорию');
+      }
     }
   };
 
@@ -110,17 +118,24 @@ export default function ProductPopup() {
   };
 
   const handleRemoveImage = async (index, isExisting) => {
-    if (isExisting && editingProduct) {
-      const imageUrl = formData.images[index];
-      const imageRef = ref(storage, imageUrl);
-      await deleteObject(imageRef).catch((error) => console.error('Error removing image:', error));
-      setFormData((prev) => ({
-        ...prev,
-        images: prev.images.filter((_, i) => i !== index),
-      }));
-    } else {
-      setImageFiles((prev) => prev.filter((_, i) => i !== index));
-      setUploadedImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    try {
+      if (isExisting && editingProduct) {
+        const imageUrl = formData.images[index];
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef);
+        setFormData((prev) => ({
+          ...prev,
+          images: prev.images.filter((_, i) => i !== index),
+        }));
+        toast.success('Изображение удалено');
+      } else {
+        setImageFiles((prev) => prev.filter((_, i) => i !== index));
+        setUploadedImagePreviews((prev) => prev.filter((_, i) => i !== index));
+        toast.success('Изображение удалено из предпросмотра');
+      }
+    } catch (error) {
+      console.error('Ошибка удаления изображения:', error);
+      toast.error('Не удалось удалить изображение');
     }
   };
 
@@ -128,10 +143,11 @@ export default function ProductPopup() {
     e.preventDefault();
     const validationError = validateForm();
     if (validationError) {
-      alert(validationError);
+      toast.error(validationError);
       return;
     }
 
+    setIsSubmitting(true);
     try {
       let imageUrls = [...formData.images]; // Start with existing images
       if (imageFiles.length > 0) {
@@ -145,16 +161,20 @@ export default function ProductPopup() {
 
       const finalProductData = { ...formData, images: imageUrls };
       if (editingProduct) {
-        await dispatch(updateProduct(finalProductData));
+        await dispatch(updateProduct(finalProductData)).unwrap();
+        toast.success('Товар отредактирован');
       } else {
-        await dispatch(addProduct(finalProductData));
+        await dispatch(addProduct(finalProductData)).unwrap();
+        toast.success('Товар добавлен');
       }
       dispatch(closePopup());
       setImageFiles([]);
       setUploadedImagePreviews([]);
     } catch (error) {
       console.error('Ошибка сохранения:', error);
-      alert(`Не удалось сохранить товар: ${error.message}`);
+      toast.error(`Не удалось сохранить товар: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -292,8 +312,8 @@ export default function ProductPopup() {
             className={styles.formInput}
           />
           <SelectAvailable formData={formData} handleChange={handleAvailabilityChange} />
-          <button type='submit' className={styles.buttonSubmit}>
-            Сохранить
+          <button type='submit' className={styles.buttonSubmit} disabled={isSubmitting}>
+            {isSubmitting ? 'Сохраняется...' : 'Сохранить'}
           </button>
         </form>
       </div>

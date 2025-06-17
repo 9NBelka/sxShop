@@ -9,7 +9,11 @@ export default function ProductCard({ product, onEdit, onDelete }) {
       {product.images && product.images[0] ? (
         <img src={product.images[0]} alt={product.name} className={styles.imageProduct} />
       ) : (
-        <p className={styles.noImageText}>Нет изображения</p>
+        <img
+          src='/img/defaultImageForDashBoard.jpg'
+          alt='defaultImageForDashBoard'
+          className={styles.imageProduct}
+        />
       )}
       <div className={styles.descriptionProductBlock}>
         <p

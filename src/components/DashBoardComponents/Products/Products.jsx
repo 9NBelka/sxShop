@@ -5,6 +5,7 @@ import ProductPopup from './ProductPopup/ProductPopup';
 import styles from './Products.module.scss';
 import { BsPlusCircle } from 'react-icons/bs';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -17,9 +18,10 @@ export default function Products() {
   const handleAddProduct = () => dispatch(openPopup());
   const handleEditProduct = (product) => dispatch(openPopup(product));
   const handleDeleteProduct = (id) => {
+    toast.error('Товар успешно удален!');
     dispatch(deleteProduct(id)).catch((error) => {
       console.error('Ошибка удаления:', error);
-      alert('Не удалось удалить товар');
+      toast.error('Не удалось удалить товар');
     });
   };
 
