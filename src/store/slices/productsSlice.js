@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { collection, getDocs, deleteDoc, doc, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Timestamp } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const convertTimestamp = (data) => {
@@ -28,10 +27,14 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (i
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (productData) => {
-  const newId = uuidv4();
-  const productWithId = { ...productData, id: newId, createdAt: new Date().toISOString() };
-  const docRef = await addDoc(collection(db, 'products'), productWithId);
-  return { ...productWithId, id: docRef.id };
+  const newDocRef = doc(collection(db, 'products'));
+  const productWithId = {
+    ...productData,
+    id: newDocRef.id,
+    createdAt: new Date().toISOString(),
+  };
+  await setDoc(newDocRef, productWithId);
+  return productWithId;
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async (productData) => {

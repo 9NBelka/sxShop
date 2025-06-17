@@ -38,7 +38,7 @@ export default function Products() {
         )}
         {items.map((product) => (
           <ProductCard
-            key={product.id}
+            key={product.id || `temp-${Math.random().toString(36).substr(2, 9)}`}
             product={product}
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
