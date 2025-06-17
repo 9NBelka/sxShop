@@ -1,13 +1,13 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closePopup, updateProduct, addProduct } from '../../../../store/slices/productsSlice';
 import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../../../firebase';
 import styles from './ProductPopup.module.scss';
-import { BsPlusCircle, BsXLg } from 'react-icons/bs';
+import { BsPlusCircle, BsTrash, BsXLg } from 'react-icons/bs';
 import clsx from 'clsx';
-import { fetchCategories } from '../../../../store/slices/categoriesSlice';
+import { fetchCategories, addCategory } from '../../../../store/slices/categoriesSlice';
 import SelectCategory from './SelectCategory/SelectCategory';
 import SelectAvailable from './SelectAvailable/SelectAvailable';
 
@@ -16,7 +16,7 @@ export default function ProductPopup() {
   const { isPopupOpen, editingProduct } = useSelector((state) => state.products);
   const categories = useSelector((state) => state.categories.items);
   const categoriesStatus = useSelector((state) => state.categories.status);
-  const [formData, setFormData] = React.useState(
+  const [formData, setFormData] = useState(
     editingProduct || {
       id: doc(collection(db, 'products')).id,
       name: '',
@@ -40,32 +40,38 @@ export default function ProductPopup() {
       dispatch(fetchCategories());
     }
     if (editingProduct && !formData.category && categories.length > 0) {
-      setFormData((prev) => ({ ...prev, category: categories[0].name }));
+      setFormData((prev) => ({ ...prev, category: editingProduct.category || '' }));
     }
-  }, [dispatch, isPopupOpen, categoriesStatus, editingProduct, categories, formData.category]);
+  }, [dispatch, isPopupOpen, categoriesStatus, editingProduct, categories]);
+
+  useEffect(() => {
+    return () => {
+      uploadedImages.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [uploadedImages]);
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    if (name === 'isAvailable') {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value === 'В продаже',
-      }));
-    } else if (name === 'category') {
-      if (value === 'create-new') {
-        setShowNewCategoryPopup(true);
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  }, []);
+
+  const handleCategoryChange = useCallback((e) => {
+    const { value } = e.target;
+    if (value === 'create-new') {
+      setShowNewCategoryPopup(true);
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: type === 'checkbox' ? checked : value,
-      }));
+      setFormData((prev) => ({ ...prev, category: value }));
     }
+  }, []);
+
+  const handleAvailabilityChange = useCallback((e) => {
+    setFormData((prev) => ({
+      ...prev,
+      isAvailable: e.target.value === 'В продаже',
+    }));
   }, []);
 
   const handleImageUpload = (e) => {
@@ -81,8 +87,7 @@ export default function ProductPopup() {
 
   const handleAddNewCategory = async () => {
     if (newCategory.trim()) {
-      await addDoc(collection(db, 'productCategories'), { name: newCategory.trim() });
-      dispatch(fetchCategories()); // Обновляем список категорий
+      await dispatch(addCategory(newCategory.trim()));
       setFormData((prev) => ({ ...prev, category: newCategory.trim() }));
       setNewCategory('');
       setShowNewCategoryPopup(false);
@@ -93,13 +98,15 @@ export default function ProductPopup() {
     if (!formData.name.trim()) return 'Название обязательно';
     if (!formData.category.trim()) return 'Категория обязательна';
     if (formData.stockQuantity < 0) return 'Остаток не может быть отрицательным';
-    if (formData.price < 0) return 'Цена не может быть отрицательной';
+    if (formData.price < 0 || isNaN(formData.price)) return 'Цена должна быть положительным числом';
+    if (formData.price && !/^\d+(\.\d{1,2})?$/.test(formData.price))
+      return 'Цена должна иметь не более двух знаков после запятой';
+    if (imageFiles.length + formData.images.length > 5) return 'Максимум 5 изображений';
     return '';
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productData = { ...formData, images: formData.images.filter(Boolean) };
     const validationError = validateForm();
     if (validationError) {
       alert(validationError);
@@ -117,16 +124,11 @@ export default function ProductPopup() {
         }
       }
 
-      const finalProductData = { ...productData, images: imageUrls };
+      const finalProductData = { ...formData, images: imageUrls };
       if (editingProduct) {
         const productRef = doc(db, 'products', editingProduct.id);
-        const docSnap = await getDoc(productRef);
-        if (docSnap.exists()) {
-          await updateDoc(productRef, finalProductData);
-          dispatch(updateProduct(finalProductData));
-        } else {
-          throw new Error('Документ не найден');
-        }
+        await updateDoc(productRef, finalProductData);
+        dispatch(updateProduct(finalProductData));
       } else {
         const docRef = await addDoc(collection(db, 'products'), finalProductData);
         dispatch(addProduct({ ...finalProductData, id: docRef.id }));
@@ -143,7 +145,6 @@ export default function ProductPopup() {
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       dispatch(closePopup());
-      setShowNewCategoryPopup(false);
     }
   };
 
@@ -173,18 +174,39 @@ export default function ProductPopup() {
           <div
             className={clsx(
               styles.addImageBlocks,
-              uploadedImages.length >= 2 && styles.scrollImages,
+              formData.images.length + uploadedImages.length >= 2 && styles.scrollImages,
             )}>
+            {editingProduct &&
+              formData.images.length > 0 &&
+              formData.images.map((src, index) => (
+                <div key={`existing-${index}`} className={styles.addImageBlock}>
+                  <img
+                    src={src}
+                    alt={`Existing ${index}`}
+                    className={clsx(
+                      formData.images.length + uploadedImages.length >= 1 && styles.opacityImage,
+                    )}
+                  />
+                  <div className={styles.iconTrashBlock}>
+                    <BsTrash className={styles.addIcon} />
+                  </div>
+                </div>
+              ))}
             {uploadedImages.map((src, index) => (
-              <div key={index} className={styles.addImageBlock}>
+              <div key={`uploaded-${index}`} className={styles.addImageBlock}>
                 <img
                   src={src}
                   alt={`Uploaded ${index}`}
-                  className={clsx(uploadedImages.length >= 2 && styles.opacityImage)}
+                  className={clsx(
+                    formData.images.length + uploadedImages.length >= 1 && styles.opacityImage,
+                  )}
                 />
+                <div className={styles.iconTrashBlock}>
+                  <BsTrash className={styles.addIcon} />
+                </div>
               </div>
             ))}
-            {uploadedImages.length < 5 && (
+            {formData.images.length + uploadedImages.length < 5 && (
               <div className={styles.addImageBlock} onClick={handleImageBlockClick}>
                 <img src='/img/defaultImageForDashBoard.jpg' alt='defaultImageForDashBoard' />
                 <div className={styles.iconAndTextBlock}>
@@ -213,7 +235,7 @@ export default function ProductPopup() {
           <SelectCategory
             showNewCategoryPopup={showNewCategoryPopup}
             formData={formData}
-            handleChange={handleChange}
+            handleChange={handleCategoryChange}
             categories={categories}
             handleNewCategoryOverlayClick={handleNewCategoryOverlayClick}
             setShowNewCategoryPopup={setShowNewCategoryPopup}
@@ -247,9 +269,7 @@ export default function ProductPopup() {
             required
             className={styles.formInput}
           />
-
-          <SelectAvailable formData={formData} handleChange={handleChange} />
-
+          <SelectAvailable formData={formData} handleChange={handleAvailabilityChange} />
           <button type='submit' className={styles.buttonSubmit}>
             Сохранить
           </button>

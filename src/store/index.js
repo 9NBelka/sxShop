@@ -14,6 +14,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['auth/checkAuthState/fulfilled', 'auth/setUser'],
         ignoredPaths: ['auth.user'],
+        // serializableCheck: false,
       },
     }),
 });

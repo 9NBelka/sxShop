@@ -6,7 +6,7 @@ import { BsPencil, BsTrash } from 'react-icons/bs';
 export default function ProductCard({ product, onEdit, onDelete }) {
   return (
     <div className={styles.productCard}>
-      {product.images[0] ? (
+      {product.images && product.images[0] ? (
         <img src={product.images[0]} alt={product.name} className={styles.imageProduct} />
       ) : (
         <p className={styles.noImageText}>Нет изображения</p>

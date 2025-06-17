@@ -1,20 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const fetchCategories = createAsyncThunk('categories/fetchCategories', async () => {
   const querySnapshot = await getDocs(collection(db, 'productCategories'));
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    name: doc.data().name || 'Без названия',
-  }));
+  return querySnapshot.docs
+    .map((doc) => {
+      const data = doc.data();
+      if (!data.name) {
+        console.warn(`Категория с ID ${doc.id} не имеет имени`);
+        return null;
+      }
+      return { id: doc.id, name: data.name };
+    })
+    .filter(Boolean);
+});
+
+export const addCategory = createAsyncThunk('categories/addCategory', async (name) => {
+  const docRef = await addDoc(collection(db, 'productCategories'), { name });
+  return { id: docRef.id, name };
 });
 
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState: {
     items: [],
-    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    status: 'idle',
     error: null,
   },
   reducers: {},
@@ -30,6 +41,9 @@ const categoriesSlice = createSlice({
       .addCase(fetchCategories.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(addCategory.fulfilled, (state, action) => {
+        state.items.push(action.payload);
       });
   },
 });

@@ -1,21 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Timestamp } from 'firebase/firestore';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const querySnapshot = await getDocs(collection(db, 'products'));
-  return querySnapshot.docs.map((doc) => {
-    const data = doc.data() || {};
+  const convertTimestamp = (data) => {
     return {
-      id: doc.id,
       ...data,
       createdAt:
-        (data.createdAt instanceof Timestamp
+        data.createdAt instanceof Timestamp
           ? data.createdAt.toDate().toISOString()
-          : data.createdAt) || new Date().toISOString(),
+          : data.createdAt || new Date().toISOString(),
     };
-  });
+  };
+
+  const querySnapshot = await getDocs(collection(db, 'products'));
+  return querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...convertTimestamp(doc.data() || {}),
+  }));
+});
+
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id) => {
+  await deleteDoc(doc(db, 'products', id));
+  return id;
 });
 
 const productsSlice = createSlice({
@@ -43,9 +51,6 @@ const productsSlice = createSlice({
       const index = state.items.findIndex((p) => p.id === action.payload.id);
       if (index !== -1) state.items[index] = action.payload;
     },
-    deleteProduct: (state, action) => {
-      state.items = state.items.filter((p) => p.id !== action.payload);
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -59,10 +64,12 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.items = state.items.filter((p) => p.id !== action.payload);
       });
   },
 });
 
-export const { openPopup, closePopup, addProduct, updateProduct, deleteProduct } =
-  productsSlice.actions;
+export const { openPopup, closePopup, addProduct, updateProduct } = productsSlice.actions;
 export default productsSlice.reducer;

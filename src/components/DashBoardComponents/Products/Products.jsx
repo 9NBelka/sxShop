@@ -1,12 +1,10 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, openPopup, deleteProduct } from '../../../store/slices/productsSlice';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../../firebase';
 import ProductCard from './ProductCard/ProductCard';
 import ProductPopup from './ProductPopup/ProductPopup';
 import styles from './Products.module.scss';
 import { BsPlusCircle } from 'react-icons/bs';
+import { useEffect } from 'react';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -14,13 +12,12 @@ export default function Products() {
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch]);
+  }, []);
 
   const handleAddProduct = () => dispatch(openPopup());
   const handleEditProduct = (product) => dispatch(openPopup(product));
   const handleDeleteProduct = (id) => {
-    dispatch(deleteProduct(id));
-    deleteDoc(doc(db, 'products', id)).catch((error) => {
+    dispatch(deleteProduct(id)).catch((error) => {
       console.error('Ошибка удаления:', error);
       alert('Не удалось удалить товар');
     });
@@ -36,6 +33,9 @@ export default function Products() {
         Добавить товар
       </button>
       <div className={styles.mainBlockProducts}>
+        {items.length === 0 && status === 'succeeded' && (
+          <p>Товары отсутствуют. Добавьте новый товар!</p>
+        )}
         {items.map((product) => (
           <ProductCard
             key={product.id}
