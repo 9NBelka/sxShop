@@ -1,0 +1,129 @@
+.productCard {
+  display: flex;
+  flex-direction: column;
+  width: 24%;
+  background-color: var(--color-white);
+  border-radius: 1.05vw;
+  padding: 1.045vw 1.57vw;
+  margin-top: 1.46vw;
+  box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
+
+  & .imageProduct {
+    width: 100%;
+  }
+
+  & .noImageText {
+    font-size: 0.84vw;
+    color: var(--color-lightGrey);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    text-align: center;
+  }
+}
+
+.descriptionProductBlock {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.2vw;
+  & .categoryAndQuantityText {
+    font-size: 0.84vw;
+    color: var(--color-lightGrey);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    margin-top: 0.84vw;
+
+    &.activeGreen {
+      color: var(--color-lightGreen);
+      margin: 0;
+    }
+
+    &.noActiveRed {
+      color: var(--color-lightRed);
+      margin: 0;
+    }
+  }
+
+  & .nameProduct {
+    font-size: 1.25vw;
+    color: var(--color-darkBlueTwo);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-black);
+  }
+
+  & .priceProduct {
+    font-size: 1.05vw;
+    color: var(--color-black);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    margin-top: 0.84vw;
+  }
+
+  & .buttonsProductBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    & .buttonProduct {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      background: none;
+      border: 0;
+      font-size: 0.84vw;
+      color: var(--color-blue);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-regular);
+      padding: 0;
+      margin-top: 0.84vw;
+      gap: 0.16vw;
+
+      & .buttonIcon {
+        width: 0.84vw;
+        height: 0.84vw;
+      }
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  .productCard {
+    margin-top: 28px;
+    border-radius: 20px;
+    padding: 20px 30px;
+    box-shadow: 0vw 2px 4px rgba(0, 0, 0, 0.25);
+
+    & .noImageText {
+      font-size: 16px;
+    }
+  }
+
+  .descriptionProductBlock {
+    margin-top: 23px;
+    & .categoryAndQuantityText {
+      font-size: 16px;
+    }
+
+    & .nameProduct {
+      font-size: 24px;
+    }
+
+    & .priceProduct {
+      font-size: 20px;
+      margin-top: 16px;
+    }
+
+    & .buttonsProductBlock {
+      & .buttonProduct {
+        font-size: 16px;
+        margin-top: 16px;
+        gap: 3px;
+
+        & .buttonIcon {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,258 @@
+.backgroundBlack {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.mainPopUpBlock {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  width: 30.9vw;
+  padding: 1.25vw 1.57vw;
+  border-radius: 1.05vw;
+
+  & .titleAndCloseBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & .popUpTitle {
+      font-size: 1.25vw;
+      color: var(--color-darkBlueTwo);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-black);
+    }
+
+    & .buttonClose {
+      background: none;
+      border: 0;
+      cursor: pointer;
+
+      & .icon {
+        width: 0.94vw;
+        height: 0.94vw;
+      }
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  .mainPopUpBlock {
+    width: 592px;
+    padding: 24px 30px;
+    border-radius: 20px;
+
+    & .titleAndCloseBlock {
+      & .popUpTitle {
+        font-size: 24px;
+      }
+
+      & .buttonClose {
+        & .icon {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+}
+
+.formBlock {
+  display: flex;
+  flex-direction: column;
+
+  & .addImageBlocks {
+    display: flex;
+    flex-direction: row;
+    gap: 0.53vw;
+    margin-top: 1.2vw;
+    overflow: hidden;
+
+    &.scrollImages {
+      padding-bottom: 0.25vw;
+      overflow-x: auto;
+      white-space: nowrap; // Предотвращаем перенос элементов
+      -webkit-overflow-scrolling: touch; // Плавная прокрутка на мобильных устройствах
+
+      /* Стили для полосы прокрутки (кросс-браузерная поддержка) */
+      &::-webkit-scrollbar {
+        height: 0.45vw;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #ffffff; // Серый цвет
+        border-radius: 0.25vw;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1; // Фон трека
+      }
+
+      /* Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: #888 #e0e3e8;
+    }
+
+    & .addImageBlock {
+      display: flex;
+      flex-shrink: 0;
+      position: relative;
+      // width: 50%;
+      width: auto;
+      cursor: pointer;
+
+      & img {
+        display: flex;
+        border: 0.105vw solid var(--color-lightGreyTwo);
+        filter: opacity(0.67);
+        cursor: pointer;
+        width: 13.5vw;
+        height: auto;
+        object-fit: cover;
+
+        &.opacityImage {
+          filter: opacity(1);
+        }
+      }
+
+      & .iconAndTextBlock {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        & .addIcon {
+          width: 2.1vw;
+          height: 2.1vw;
+        }
+
+        & .addText {
+          font-size: 1.05vw;
+          color: var(--color-darkBlue);
+          font-family: var(--font-Lato);
+          font-weight: var(--font-weight-regular);
+          margin-top: 0.42vw;
+        }
+      }
+    }
+  }
+
+  & .formInput {
+    background-color: #e0e3e8;
+    box-shadow: inset 0 0.06vw 0.08vw rgba(0, 0, 0, 0.25);
+    border-radius: 0.5vw;
+    padding: 0.47vw 0.63vw;
+    outline: none;
+    font-size: 0.94vw;
+    color: var(--color-darkBlueTwo);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    border: 0;
+    margin-top: 0.835vw;
+
+    &.margTop {
+      margin-top: 1.2vw;
+    }
+
+    &.descriptionFormInput {
+      height: 8.35vw;
+      resize: none;
+    }
+  }
+
+  & .buttonSubmit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05vw;
+    color: var(--color-darkBlue);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    background-color: var(--color-lightBlue);
+    border: 0;
+    padding: 1.305vw 1.045vw;
+    gap: 0.525vw;
+    border-radius: 0.525vw;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    margin-top: 1.2vw;
+  }
+}
+
+@media (min-width: 1920px) {
+  .formBlock {
+    & .addImageBlocks {
+      gap: 10px;
+      margin-top: 23px;
+
+      &.scrollImages {
+        padding-bottom: 5px;
+
+        &::-webkit-scrollbar {
+          height: 5px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 5px;
+        }
+      }
+
+      & .addImageBlock {
+        & img {
+          border: 2px solid var(--color-lightGreyTwo);
+          width: 259px;
+        }
+
+        & .iconAndTextBlock {
+          & .addIcon {
+            width: 40px;
+            height: 40px;
+          }
+
+          & .addText {
+            font-size: 20px;
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+
+    & .formInput {
+      box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 18px;
+      margin-top: 16px;
+
+      &.margTop {
+        margin-top: 23px;
+      }
+
+      &.descriptionFormInput {
+        height: 160px;
+      }
+    }
+
+    & .buttonSubmit {
+      font-size: 20px;
+      padding: 25px 20px;
+      gap: 10px;
+      border-radius: 10px;
+      box-shadow: 0vw 2px 4px rgba(0, 0, 0, 0.25);
+      margin-top: 23px;
+    }
+  }
+}

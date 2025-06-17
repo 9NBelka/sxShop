@@ -25,8 +25,13 @@ a {
   text-decoration: none;
 }
 
+p {
+  margin: 0;
+}
+
 :root {
   --font-Lato: 'Lato';
+
   --font-weight-thin: 100;
   --font-weight-light: 300;
   --font-weight-regular: 400;
@@ -35,9 +40,16 @@ a {
 
   --font-lineh-small: 1em;
   --color-white: white;
+  --color-black: #000000;
+  --color-lightGrey: #a2a2a2;
+  --color-lightGreyTwo: #a1a1a1;
   --color-backgroundDashboard: #e0e3e8;
   --color-darkBlue: #232232;
+  --color-darkBlueTwo: #1d1d36;
   --color-lightBlue: #b9e2fd;
+  --color-lightRed: #a15b54;
+  --color-lightGreen: #54a16b;
+  --color-blue: #4b63ff;
 }
 
 .spinner {

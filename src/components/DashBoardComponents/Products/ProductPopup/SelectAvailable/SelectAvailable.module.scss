@@ -1,0 +1,29 @@
+.selectLabel {
+  display: flex;
+}
+
+.formInput {
+  display: flex;
+  background-color: #e0e3e8;
+  box-shadow: inset 0 0.06vw 0.08vw rgba(0, 0, 0, 0.25);
+  border-radius: 0.5vw;
+  padding: 0.47vw 0.63vw;
+  outline: none;
+  font-size: 0.94vw;
+  color: var(--color-darkBlueTwo);
+  font-family: var(--font-Lato);
+  font-weight: var(--font-weight-regular);
+  border: 0;
+  margin-top: 0.835vw;
+  width: 100%;
+}
+
+@media (min-width: 1920px) {
+  .formInput {
+    box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 18px;
+    margin-top: 16px;
+  }
+}
