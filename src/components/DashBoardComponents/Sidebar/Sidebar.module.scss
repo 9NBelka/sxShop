@@ -1,9 +1,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 19.5vw;
-  height: 100vh;
-  background: var(--color-darkBlue);
+  width: 100%;
   padding: 2.61vw 2vw;
 
   & .sidebarHeader {
@@ -103,8 +101,6 @@
 
 @media (min-width: 1920px) {
   .sidebar {
-    width: 374px;
-    height: 100vh;
     padding: 50px 40px;
 
     & .sidebarHeader {

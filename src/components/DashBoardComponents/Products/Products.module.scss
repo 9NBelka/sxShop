@@ -1,48 +1,56 @@
 .mainBlockProducts {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-top: 1.31vw;
-}
+  height: 44.3vw;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 2.77vw;
+  padding-right: 0.85vw;
 
-.buttonAddProduct {
-  display: flex;
-  align-items: center;
-  font-size: 1.05vw;
-  color: var(--color-darkBlue);
-  font-family: var(--font-Lato);
-  font-weight: var(--font-weight-regular);
-  background-color: var(--color-lightBlue);
-  border: 0;
-  padding: 1.305vw 1.045vw;
-  gap: 0.525vw;
-  border-radius: 0.525vw;
-  transition: 0.3s ease-in-out;
-  box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
-  cursor: pointer;
+  &::-webkit-scrollbar {
+    width: 0.4vw;
+  }
 
-  & .icon {
-    width: 1.3vw;
-    height: 1.3vw;
+  &::-webkit-scrollbar-track {
+    border-radius: 1vw;
+    background: var(--color-lightGreyScrollBar);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-darkBlueTwo);
+    border-radius: 1vw;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+  }
+
+  & .blockProducts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.05vw;
   }
 }
 
 @media (min-width: 1920px) {
   .mainBlockProducts {
-    margin-top: 25px;
-  }
+    height: 850px;
+    margin-top: 53px;
 
-  .buttonAddProduct {
-    font-size: 20px;
-    padding: 25px 20px;
-    gap: 10px;
-    border-radius: 10px;
-    box-shadow: 0vw 2px 4px rgba(0, 0, 0, 0.25);
+    &::-webkit-scrollbar {
+      width: 0.4vw;
+    }
 
-    & .icon {
-      width: 24px;
-      height: 24px;
+    &::-webkit-scrollbar-track {
+      border-radius: 20px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 20px;
+    }
+
+    & .blockProducts {
+      gap: 20px;
     }
   }
 }

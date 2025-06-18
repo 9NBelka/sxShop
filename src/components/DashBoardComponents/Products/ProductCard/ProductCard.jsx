@@ -25,7 +25,9 @@ export default function ProductCard({ product, onEdit, onDelete }) {
         </p>
         <h3 className={styles.nameProduct}>{product.name}</h3>
         <p className={styles.priceProduct}>{product.price}$</p>
-        <p className={styles.categoryAndQuantityText}>Категория: {product.category}</p>
+        <p className={styles.categoryAndQuantityText}>
+          Категория: {product.category ? product.category : 'Не указано'}
+        </p>
         <p className={styles.categoryAndQuantityText}>Остаток на складе: {product.stockQuantity}</p>
         <div className={styles.buttonsProductBlock}>
           <button onClick={() => onEdit(product)} className={styles.buttonProduct}>

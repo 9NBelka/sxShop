@@ -1,0 +1,146 @@
+.filtersMainBlock {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 1.05vw;
+
+  & .filtersContainer {
+    display: flex;
+    gap: 1.1vw;
+  }
+
+  & .buttonNotificationProfileBlock {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.095vw;
+  }
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 16.7vw;
+
+  & .searchInput {
+    display: flex;
+    width: 16.7vw;
+    font-size: 0.84vw;
+    color: var(--color-lightGreySearch);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    padding: 0.7vw 1vw;
+    border-radius: 0.5vw;
+    outline: none;
+    border: 0;
+    padding-left: 2.55vw; // Сдвигаем текст, чтобы иконка не перекрывала
+    border-radius: 2.51vw;
+  }
+
+  & .searchIcon {
+    fill: var(--color-lightGreySearch);
+    width: 1.3vw;
+    height: 1.3vw;
+  }
+
+  & .searchIcon {
+    position: absolute;
+    left: 0.8vw;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.selectWrapper {
+  display: flex;
+  position: relative;
+
+  & .customSelect {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // width: 187px;
+    width: 9.75vw;
+
+    padding: 0.63vw 0.73vw;
+    border-radius: 2.51vw;
+    background: var(--color-white);
+    box-shadow: inset 0 0.06vw 0.08vw rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+
+    & .customSelectText {
+      font-size: 0.94vw;
+      color: var(--color-darkBlueTwo);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-regular);
+      text-transform: capitalize;
+    }
+
+    & .customSelectArrow {
+      display: flex;
+      pointer-events: none;
+
+      & .icon {
+        width: 1.05vw;
+        height: 1.05vw;
+      }
+    }
+  }
+
+  & .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-white);
+    border-radius: 1.05vw;
+    box-shadow: inset 0 0.06vw 0.08vw rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    max-height: 10.45vw;
+    overflow-y: auto;
+  }
+
+  & .option {
+    font-size: 0.84vw;
+    color: var(--color-darkBlueTwo);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    padding: 0.55vw 0.73vw;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+      background: var(--color-lightGreyScrollBar);
+    }
+  }
+}
+
+// @media (min-width: 1920px) {
+//   .filtersContainer {
+//     padding: 10px;
+//     border-radius: 10px;
+//   }
+
+//   .searchInput {
+//     padding: 10px 20px;
+//     font-size: 18px;
+//     border-radius: 10px;
+//   }
+
+//   .customSelect {
+//     padding: 10px 40px 10px 20px;
+//     font-size: 18px;
+//     border-radius: 10px;
+//   }
+
+//   .dropdown {
+//     border-radius: 10px;
+//     max-height: 200px;
+//   }
+
+//   .option {
+//     padding: 10px 20px;
+//   }
+// }

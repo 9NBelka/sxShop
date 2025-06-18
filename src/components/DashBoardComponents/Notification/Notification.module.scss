@@ -1,0 +1,17 @@
+.notificationMainBlock {
+  display: flex;
+}
+
+.icon {
+  fill: var(--color-darkBlueTwo);
+  width: 1.88vw;
+  height: 1.88vw;
+  cursor: pointer;
+}
+
+@media (min-width: 1920px) {
+  .icon {
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -5,12 +5,29 @@
   background-color: var(--color-backgroundDashboard);
 }
 
+.sidebar {
+  display: flex;
+  width: 19.5vw;
+  background: var(--color-darkBlue);
+}
+
 .mainContentArea {
+  display: flex;
+  flex-direction: column;
+  width: 80.56vw;
   padding: 2.92vw 3.127vw;
+  padding-right: 1.78vw;
+  overflow: hidden;
 }
 
 @media (min-width: 1920px) {
+  .sidebar {
+    width: 374px;
+  }
+
   .mainContentArea {
+    // width: 1546px;
     padding: 56px 60px;
+    padding-right: 34px;
   }
 }

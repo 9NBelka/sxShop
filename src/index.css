@@ -43,6 +43,8 @@ p {
   --color-black: #000000;
   --color-lightGrey: #a2a2a2;
   --color-lightGreyTwo: #a1a1a1;
+  --color-lightGreySearch: #7b7b7b;
+  --color-lightGreyScrollBar: #c0c0c0;
   --color-backgroundDashboard: #e0e3e8;
   --color-darkBlue: #232232;
   --color-darkBlueTwo: #1d1d36;

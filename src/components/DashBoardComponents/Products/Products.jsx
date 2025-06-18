@@ -2,18 +2,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, openPopup, deleteProduct } from '../../../store/slices/productsSlice';
 import ProductCard from './ProductCard/ProductCard';
 import ProductPopup from './ProductPopup/ProductPopup';
+import ProductFilters from './ProductFilters/ProductFilters';
 import styles from './Products.module.scss';
-import { BsPlusCircle } from 'react-icons/bs';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 export default function Products() {
   const dispatch = useDispatch();
-  const { items, status, error, isPopupOpen } = useSelector((state) => state.products);
+  const { items: products, status, error, isPopupOpen } = useSelector((state) => state.products);
+  const { stockFilter, categoryFilter, searchTerm } = useSelector((state) => state.filters);
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
+  }, [dispatch]);
 
   const handleAddProduct = () => dispatch(openPopup());
   const handleEditProduct = (product) => dispatch(openPopup(product));
@@ -25,27 +26,42 @@ export default function Products() {
     });
   };
 
+  // Фильтрация товаров с приведением к нижнему регистру
+  const filteredItems = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    let matchesStock = true;
+    if (stockFilter === 'нет') matchesStock = product.stockQuantity === '0';
+    else if (stockFilter === 'меньше 10')
+      matchesStock = product.stockQuantity > 0 && product.stockQuantity < 10;
+    else if (stockFilter === 'больше 10') matchesStock = product.stockQuantity >= 10;
+
+    const matchesCategory =
+      categoryFilter === 'все' || product.category.toLowerCase() === categoryFilter;
+
+    return matchesSearch && matchesStock && matchesCategory;
+  });
+
   if (status === 'loading') return <p>Загрузка...</p>;
   if (status === 'failed') return <p>Ошибка: {error}</p>;
 
   return (
     <>
-      <button onClick={handleAddProduct} className={styles.buttonAddProduct}>
-        <BsPlusCircle className={styles.icon} />
-        Добавить товар
-      </button>
+      <ProductFilters handleAddProduct={handleAddProduct} />
       <div className={styles.mainBlockProducts}>
-        {items.length === 0 && status === 'succeeded' && (
-          <p>Товары отсутствуют. Добавьте новый товар!</p>
-        )}
-        {items.map((product) => (
-          <ProductCard
-            key={product.id || `temp-${Math.random().toString(36).substr(2, 9)}`}
-            product={product}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-          />
-        ))}
+        <div className={styles.blockProducts}>
+          {filteredItems.length === 0 && status === 'succeeded' && (
+            <p>Товары отсутствуют. Добавьте новый товар!</p>
+          )}
+          {filteredItems.map((product) => (
+            <ProductCard
+              key={product.id || `temp-${Math.random().toString(36).substr(2, 9)}`}
+              product={product}
+              onEdit={handleEditProduct}
+              onDelete={handleDeleteProduct}
+            />
+          ))}
+        </div>
       </div>
       {isPopupOpen && <ProductPopup />}
     </>

@@ -1,23 +1,18 @@
 .productCard {
   display: flex;
   flex-direction: column;
-  width: 24%;
+  width: 17.78vw;
+  height: 25.02vw;
   background-color: var(--color-white);
   border-radius: 1.05vw;
   padding: 1.045vw 1.57vw;
-  margin-top: 1.46vw;
   box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.42vw;
 
   & .imageProduct {
     width: 100%;
-  }
-
-  & .noImageText {
-    font-size: 0.84vw;
-    color: var(--color-lightGrey);
-    font-family: var(--font-Lato);
-    font-weight: var(--font-weight-regular);
-    text-align: center;
+    height: 10.85vw;
+    object-fit: cover;
   }
 }
 
@@ -25,6 +20,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 1.2vw;
+
   & .categoryAndQuantityText {
     font-size: 0.84vw;
     color: var(--color-lightGrey);
@@ -89,13 +85,15 @@
 
 @media (min-width: 1920px) {
   .productCard {
-    margin-top: 28px;
+    width: 341px;
+    height: 480px;
     border-radius: 20px;
     padding: 20px 30px;
     box-shadow: 0vw 2px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 8px;
 
-    & .noImageText {
-      font-size: 16px;
+    & .imageProduct {
+      height: 208px;
     }
   }
 
@@ -103,6 +101,7 @@
     margin-top: 23px;
     & .categoryAndQuantityText {
       font-size: 16px;
+      margin-top: 16px;
     }
 
     & .nameProduct {

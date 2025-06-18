@@ -34,7 +34,7 @@ export default function Sidebar({ handleLogout }) {
   ];
 
   return (
-    <aside className={styles.sidebar}>
+    <div className={styles.sidebar}>
       <NavLink to={`${PATHS.DASHBOARD}/home`}>
         <div className={styles.sidebarHeader}>
           <h1 className={styles.title}>SXShop</h1>
@@ -60,6 +60,6 @@ export default function Sidebar({ handleLogout }) {
       {/* <button className={styles.logoutButton} onClick={handleLogout}>
         Выйти
       </button> */}
-    </aside>
+    </div>
   );
 }
