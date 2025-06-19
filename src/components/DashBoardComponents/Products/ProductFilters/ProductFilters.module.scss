@@ -18,6 +18,20 @@
   }
 }
 
+@media (min-width: 1920px) {
+  .filtersMainBlock {
+    padding-right: 20px;
+
+    & .filtersContainer {
+      gap: 21px;
+    }
+
+    & .buttonNotificationProfileBlock {
+      gap: 21px;
+    }
+  }
+}
+
 .searchWrapper {
   display: flex;
   align-items: center;
@@ -32,7 +46,6 @@
     font-family: var(--font-Lato);
     font-weight: var(--font-weight-regular);
     padding: 0.7vw 1vw;
-    border-radius: 0.5vw;
     outline: none;
     border: 0;
     padding-left: 2.55vw; // Сдвигаем текст, чтобы иконка не перекрывала
@@ -50,6 +63,29 @@
     left: 0.8vw;
     top: 50%;
     transform: translateY(-50%);
+  }
+}
+
+@media (min-width: 1920px) {
+  .searchWrapper {
+    width: 320px;
+
+    & .searchInput {
+      width: 320px;
+      font-size: 16px;
+      padding: 13.5px 19px;
+      border-radius: 48px;
+      padding-left: 49px;
+    }
+
+    & .searchIcon {
+      width: 24px;
+      height: 24px;
+    }
+
+    & .searchIcon {
+      left: 15px;
+    }
   }
 }
 
@@ -107,7 +143,7 @@
     color: var(--color-darkBlueTwo);
     font-family: var(--font-Lato);
     font-weight: var(--font-weight-regular);
-    padding: 0.55vw 0.73vw;
+    padding: 0.63vw 0.73vw;
     cursor: pointer;
     transition: 0.3s ease-in-out;
 
@@ -117,30 +153,35 @@
   }
 }
 
-// @media (min-width: 1920px) {
-//   .filtersContainer {
-//     padding: 10px;
-//     border-radius: 10px;
-//   }
+@media (min-width: 1920px) {
+  .selectWrapper {
+    & .customSelect {
+      width: 187px;
+      padding: 12px 14px;
+      border-radius: 48px;
+      box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.25);
 
-//   .searchInput {
-//     padding: 10px 20px;
-//     font-size: 18px;
-//     border-radius: 10px;
-//   }
+      & .customSelectText {
+        font-size: 18px;
+      }
 
-//   .customSelect {
-//     padding: 10px 40px 10px 20px;
-//     font-size: 18px;
-//     border-radius: 10px;
-//   }
+      & .customSelectArrow {
+        & .icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
 
-//   .dropdown {
-//     border-radius: 10px;
-//     max-height: 200px;
-//   }
+    & .dropdown {
+      border-radius: 20px;
+      box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.25);
+      max-height: 200px;
+    }
 
-//   .option {
-//     padding: 10px 20px;
-//   }
-// }
+    & .option {
+      font-size: 16px;
+      padding: 12px 14px;
+    }
+  }
+}

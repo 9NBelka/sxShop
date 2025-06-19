@@ -7,14 +7,16 @@
 
 .sidebar {
   display: flex;
-  width: 19.5vw;
+  // width: 19.5vw;
+  width: 19.5%;
   background: var(--color-darkBlue);
 }
 
 .mainContentArea {
   display: flex;
   flex-direction: column;
-  width: 80.56vw;
+  // width: 80.56vw;
+  width: calc(100% - 19.5%);
   padding: 2.92vw 3.127vw;
   padding-right: 1.78vw;
   overflow: hidden;
@@ -27,6 +29,8 @@
 
   .mainContentArea {
     // width: 1546px;
+    display: flex;
+    width: calc(100% - 374px);
     padding: 56px 60px;
     padding-right: 34px;
   }
