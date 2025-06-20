@@ -36,6 +36,7 @@ export default function ProductPopup() {
   const [showNewCategoryPopup, setShowNewCategoryPopup] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
 
   useEffect(() => {
     if (isPopupOpen && categoriesStatus === 'idle') {
@@ -50,6 +51,7 @@ export default function ProductPopup() {
   useEffect(() => {
     return () => {
       uploadedImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      setImagesToDelete([]); // Очищаем список удаляемых изображений
     };
   }, [uploadedImagePreviews]);
 
@@ -120,15 +122,17 @@ export default function ProductPopup() {
   const handleRemoveImage = async (index, isExisting) => {
     try {
       if (isExisting && editingProduct) {
+        // Добавляем URL изображения в список на удаление
         const imageUrl = formData.images[index];
-        const imageRef = ref(storage, imageUrl);
-        await deleteObject(imageRef);
+        setImagesToDelete((prev) => [...prev, imageUrl]);
+        // Удаляем изображение из formData.images для интерфейса
         setFormData((prev) => ({
           ...prev,
           images: prev.images.filter((_, i) => i !== index),
         }));
-        toast.success('Изображение удалено');
+        toast.success('Изображение удалено из предпросмотра');
       } else {
+        // Для новых загруженных изображений удаляем из локального состояния
         setImageFiles((prev) => prev.filter((_, i) => i !== index));
         setUploadedImagePreviews((prev) => prev.filter((_, i) => i !== index));
         toast.success('Изображение удалено из предпросмотра');
@@ -149,13 +153,22 @@ export default function ProductPopup() {
 
     setIsSubmitting(true);
     try {
-      let imageUrls = [...formData.images]; // Start with existing images
+      let imageUrls = [...formData.images]; // Существующие изображения
+      // Загрузка новых изображений
       if (imageFiles.length > 0) {
         for (const file of imageFiles) {
           const storageRef = ref(storage, `products/images/${formData.id}/${file.name}`);
           await uploadBytes(storageRef, file);
           const url = await getDownloadURL(storageRef);
           imageUrls.push(url);
+        }
+      }
+
+      // Удаление изображений из Firebase Storage
+      if (imagesToDelete.length > 0) {
+        for (const imageUrl of imagesToDelete) {
+          const imageRef = ref(storage, imageUrl);
+          await deleteObject(imageRef);
         }
       }
 
@@ -170,6 +183,7 @@ export default function ProductPopup() {
       dispatch(closePopup());
       setImageFiles([]);
       setUploadedImagePreviews([]);
+      setImagesToDelete([]); // Очищаем список удаляемых изображений
     } catch (error) {
       console.error('Ошибка сохранения:', error);
       toast.error(`Не удалось сохранить товар: ${error.message}`);
@@ -224,10 +238,11 @@ export default function ProductPopup() {
                         styles.opacityImage,
                     )}
                   />
-                  <div
-                    className={styles.iconTrashBlock}
-                    onClick={() => handleRemoveImage(index, true)}>
-                    <BsTrash className={styles.addIcon} />
+                  <div className={styles.iconTrashBlock}>
+                    <BsTrash
+                      className={styles.addIcon}
+                      onClick={() => handleRemoveImage(index, true)}
+                    />
                   </div>
                 </div>
               ))}
@@ -241,10 +256,11 @@ export default function ProductPopup() {
                       styles.opacityImage,
                   )}
                 />
-                <div
-                  className={styles.iconTrashBlock}
-                  onClick={() => handleRemoveImage(index, false)}>
-                  <BsTrash className={styles.addIcon} />
+                <div className={styles.iconTrashBlock}>
+                  <BsTrash
+                    className={styles.addIcon}
+                    onClick={() => handleRemoveImage(index, false)}
+                  />
                 </div>
               </div>
             ))}

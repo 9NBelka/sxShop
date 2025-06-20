@@ -106,13 +106,11 @@
       position: relative;
       // width: 50%;
       width: auto;
-      cursor: pointer;
 
       & img {
         display: flex;
         border: 0.105vw solid var(--color-lightGreyTwo);
         filter: opacity(0.67);
-        cursor: pointer;
         width: 13.5vw;
         height: auto;
         object-fit: cover;
@@ -132,6 +130,7 @@
         position: absolute;
         top: 0;
         left: 0;
+        cursor: pointer;
 
         & .addIcon {
           width: 2.1vw;
@@ -165,6 +164,7 @@
           padding: 0.25vw;
           transition: 0.3s ease-in-out;
           border-bottom-left-radius: 0.5vw;
+          cursor: pointer;
 
           &:hover {
             fill: var(--color-white);

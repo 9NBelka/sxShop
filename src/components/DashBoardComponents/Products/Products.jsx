@@ -19,7 +19,7 @@ export default function Products() {
   const handleAddProduct = () => dispatch(openPopup());
   const handleEditProduct = (product) => dispatch(openPopup(product));
   const handleDeleteProduct = (id) => {
-    toast.error('Товар успешно удален!');
+    toast.success('Товар успешно удален!');
     dispatch(deleteProduct(id)).catch((error) => {
       console.error('Ошибка удаления:', error);
       toast.error('Не удалось удалить товар');
@@ -49,19 +49,17 @@ export default function Products() {
     <>
       <ProductFilters handleAddProduct={handleAddProduct} />
       <div className={styles.mainBlockProducts}>
-        <div className={styles.blockProducts}>
-          {filteredItems.length === 0 && status === 'succeeded' && (
-            <p>Товары отсутствуют. Добавьте новый товар!</p>
-          )}
-          {filteredItems.map((product) => (
-            <ProductCard
-              key={product.id || `temp-${Math.random().toString(36).substr(2, 9)}`}
-              product={product}
-              onEdit={handleEditProduct}
-              onDelete={handleDeleteProduct}
-            />
-          ))}
-        </div>
+        {filteredItems.length === 0 && status === 'succeeded' && (
+          <p>Товары отсутствуют. Добавьте новый товар!</p>
+        )}
+        {filteredItems.map((product) => (
+          <ProductCard
+            key={product.id || `temp-${Math.random().toString(36).substr(2, 9)}`}
+            product={product}
+            onEdit={handleEditProduct}
+            onDelete={handleDeleteProduct}
+          />
+        ))}
       </div>
       {isPopupOpen && <ProductPopup />}
     </>

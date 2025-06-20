@@ -1,10 +1,14 @@
 .mainBlockProducts {
   display: flex;
-  height: 44.3vw;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 42.5vw;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   margin-top: 2.77vw;
   padding-right: 0.85vw;
+  padding-bottom: 3.15vw;
+  gap: 1.05vw;
 
   &::-webkit-scrollbar {
     width: 0.4vw;
@@ -23,19 +27,14 @@
   &::-webkit-scrollbar-thumb:hover {
     opacity: 0.7;
   }
-
-  & .blockProducts {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1.05vw;
-  }
 }
 
 @media (min-width: 1920px) {
   .mainBlockProducts {
-    height: 850px;
+    height: 815px;
     margin-top: 53px;
+    gap: 20px;
+    padding-bottom: 60px;
 
     &::-webkit-scrollbar {
       width: 0.4vw;
@@ -48,10 +47,12 @@
     &::-webkit-scrollbar-thumb {
       border-radius: 20px;
     }
+  }
+}
 
-    & .blockProducts {
-      gap: 20px;
-    }
+@media (min-width: 2200px) {
+  .mainBlockProducts {
+    height: 920px;
   }
 }
 
