@@ -8,6 +8,8 @@ import {
   togglePromocodeStatus,
   updatePromocode,
 } from '../../../store/slices/promocodesSlice';
+import clsx from 'clsx';
+import { BsPencil, BsPlusCircle } from 'react-icons/bs';
 
 export default function Promocodes() {
   const dispatch = useDispatch();
@@ -93,33 +95,54 @@ export default function Promocodes() {
   if (status === 'loading') return <div>Загрузка...</div>;
 
   return (
-    <div className={styles.container}>
-      <h1>Промокоды</h1>
-      <button onClick={() => setIsPopupOpen(true)} className={styles.addButton}>
-        Добавить промокод
-      </button>
+    <div className={styles.mainBlockPromocodes}>
       <div className={styles.promocodeList}>
+        <button onClick={() => setIsPopupOpen(true)} className={styles.promocodeAddButton}>
+          <BsPlusCircle className={styles.iconPlus} />
+          Добавить промокод
+        </button>
         {items.map((promocode, index) => (
           <div key={promocode.id || `promocode-${index}`} className={styles.promocodeCard}>
-            <h2>{promocode.name}</h2>
-            <p>
-              {promocode.discountType === 'percentage'
-                ? `${promocode.discountValue}%`
-                : `$${promocode.discountValue}`}
+            <p className={styles.typePromocodeText}>
+              {promocode.type === 'temporary' ? 'Временный промокод' : 'Промокод'}
             </p>
-            <p>
+            <p className={styles.timesOrNoPromocodeText}>
               {promocode.type === 'temporary'
                 ? `С ${promocode.startDate} по ${promocode.endDate}`
-                : 'Постоянный'}
+                : 'Бессрочный'}
             </p>
-            <p>Использований: {promocode.usageCount}</p>
-            <p>{promocode.isActive ? 'Активен' : 'Неактивен'}</p>
-            <button onClick={() => handleEdit(promocode)} className={styles.editButton}>
-              Редактировать
-            </button>
-            <button onClick={() => handleToggle(promocode.id)} className={styles.toggleButton}>
-              {promocode.isActive ? 'Выключить' : 'Включить'}
-            </button>
+            <p className={styles.percentageAndNumbText}>
+              {promocode.discountType === 'percentage'
+                ? `${promocode.discountValue}%`
+                : `${promocode.discountValue}$`}
+            </p>
+            <h2 className={styles.promocodeNameText}>{promocode.name}</h2>
+            <div className={styles.usageCountAndActiveBlock}>
+              <p className={clsx(styles.usageCountAndActiveText, styles.blueText)}>
+                {promocode.usageCount} использований
+              </p>
+              <p
+                className={clsx(
+                  styles.usageCountAndActiveText,
+                  promocode.isActive && styles.activeText,
+                )}>
+                {promocode.isActive ? 'Активен' : 'Неактивен'}
+              </p>
+            </div>
+
+            <div className={styles.buttonsDeleteAndChange}>
+              <button
+                onClick={() => handleToggle(promocode.id)}
+                className={clsx(
+                  styles.activeButtonPromocode,
+                  promocode.isActive && styles.buttonActive,
+                )}>
+                {promocode.isActive ? 'Деактивировать' : 'Активировать'}
+              </button>
+              <button onClick={() => handleEdit(promocode)} className={styles.editButtonPromocode}>
+                <BsPencil className={styles.editIcon} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -140,15 +163,28 @@ export default function Promocodes() {
                 <option value='percentage'>Процент</option>
                 <option value='amount'>Сумма</option>
               </select>
-              <input
-                name='discountValue'
-                type='number'
-                value={formData.discountValue}
-                onChange={handleChange}
-                placeholder={formData.discountType === 'percentage' ? 'Процент' : 'Сумма'}
-                required
-                min='0'
-              />
+              {formData.discountType === 'percentage' ? (
+                <input
+                  name='discountValue'
+                  type='number'
+                  value={formData.discountValue}
+                  onChange={handleChange}
+                  placeholder={'Процент'}
+                  required
+                  min='0'
+                  max='100'
+                />
+              ) : (
+                <input
+                  name='discountValue'
+                  type='number'
+                  value={formData.discountValue}
+                  onChange={handleChange}
+                  placeholder={'Сумма'}
+                  required
+                  min='0'
+                />
+              )}
               <select name='type' value={formData.type} onChange={handleChange}>
                 <option value='permanent'>Постоянный</option>
                 <option value='temporary'>Временный</option>

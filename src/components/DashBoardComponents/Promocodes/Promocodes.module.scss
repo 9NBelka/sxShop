@@ -1,48 +1,193 @@
-.container {
-  padding: 20px;
+.mainBlockPromocodes {
+  display: flex;
+  flex-direction: column;
 }
 
-.addButton {
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+.promocodeAddButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25vw;
+  color: var(--color-darkBlueTwo);
+  font-family: var(--font-Lato);
+  font-weight: var(--font-weight-bold);
+  line-height: 100%;
+  width: 17.4vw;
+  height: 14.44vw;
+  background: none;
+  border-radius: 1.05vw;
+  border: 0.21vw dashed var(--color-lightGreyTwo);
   cursor: pointer;
+  gap: 1.775vw;
+  padding: 0;
+  transition: 0.3s ease-in-out;
+
+  & .iconPlus {
+    fill: var(--color-lightGreyTwo);
+    width: 4.2vw;
+    height: 4.2vw;
+    transition: 0.3s ease-in-out;
+  }
+
+  &:hover {
+    border: 0.21vw solid var(--color-lightGreyTwo);
+  }
+
+  &:hover .iconPlus {
+    transform: rotate(180deg);
+  }
 }
 
 .promocodeList {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  max-height: 42.5vw;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 2.77vw;
+  padding-right: 0.85vw;
+  padding-bottom: 3.15vw;
+  gap: 1.564vw;
+
+  &::-webkit-scrollbar {
+    width: 0.4vw;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 1vw;
+    background: var(--color-lightGreyScrollBar);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-darkBlueTwo);
+    border-radius: 1vw;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+  }
 }
 
 .promocodeCard {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  width: 200px;
-  text-align: center;
-  background: #f9f9f9;
-}
+  display: flex;
+  flex-direction: column;
+  width: 17.4vw;
+  background-color: var(--color-white);
+  border-radius: 1.05vw;
+  padding: 1.045vw 1.045vw;
+  box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
 
-.editButton,
-.toggleButton {
-  margin-top: 10px;
-  padding: 5px 10px;
-  margin-right: 5px;
-  border: none;
-  cursor: pointer;
-}
+  & .typePromocodeText {
+    font-size: 1.25vw;
+    color: var(--color-darkBlueTwo);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-bold);
+    line-height: 100%;
+  }
 
-.editButton {
-  background-color: #28a745;
-  color: white;
-}
+  & .timesOrNoPromocodeText {
+    font-size: 0.84vw;
+    color: var(--color-lightRed);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-regular);
+    margin-top: 0.21vw;
+  }
 
-.toggleButton {
-  background-color: #dc3545;
-  color: white;
+  & .percentageAndNumbText {
+    font-size: 1.25vw;
+    color: var(--color-lightRed);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-bold);
+    margin-top: 0.21vw;
+  }
+
+  & .promocodeNameText {
+    font-size: 1.88vw;
+    color: var(--color-black);
+    font-family: var(--font-Lato);
+    font-weight: var(--font-weight-black);
+    line-height: 100%;
+    margin-top: 1.2vw;
+  }
+
+  & .usageCountAndActiveBlock {
+    display: flex;
+    flex-direction: row;
+    gap: 0.55vw;
+    margin-top: 1.2vw;
+
+    & .usageCountAndActiveText {
+      font-size: 0.84vw;
+      color: var(--color-lightRed);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-regular);
+
+      &.blueText {
+        color: var(--color-blue);
+      }
+
+      &.activeText {
+        color: var(--color-lightGreen);
+      }
+    }
+  }
+
+  & .buttonsDeleteAndChange {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.2vw;
+
+    & .activeButtonPromocode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.05vw;
+      color: var(--color-black);
+      font-family: var(--font-Lato);
+      font-weight: var(--font-weight-regular);
+      background-color: var(--color-lightBlue);
+      border: 0;
+      padding: 0.79vw 1.045vw;
+      gap: 0.525vw;
+      border-radius: 0.525vw;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0vw 0.1vw 0.2vw rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+
+      &.buttonActive {
+        background-color: var(--color-lightOrange);
+      }
+    }
+
+    & .editButtonPromocode {
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      background: var(--color-backgroundDashboard);
+      border-radius: 50%;
+      border: 0;
+      padding: 0.55vw;
+      border: 0.05vw dashed var(--color-backgroundDashboard);
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+
+      & .editIcon {
+        fill: var(--color-blue);
+        width: 0.84vw;
+        height: 0.84vw;
+      }
+
+      &:hover {
+        border: 0.05vw dashed var(--color-darkBlue);
+      }
+    }
+  }
 }
 
 .popup {
